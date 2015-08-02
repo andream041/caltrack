@@ -24,6 +24,8 @@
 -- CREATE SEQUENCE nutnum_seq START 0000001;
 -- ALTER TABLE nuttest ALTER nutnum SET DEFAULT NEXTVAL('nutnum_seq');
 
-INSERT INTO nuttest (cal, name) VALUES
-    (100, scanner);
-    ;
+-- INSERT INTO nuttest (cal, name) VALUES
+    -- (100, 'scanner')
+    -- ;
+
+
