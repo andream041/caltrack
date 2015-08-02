@@ -28,5 +28,15 @@
     -- (100, 'scanner')
     -- ;
 
-CREATE TABLE scaletest(
+-- DROP SEQUENCE scalenum_seq;
+-- CREATE SEQUENCE scalenum_seq START 0000000000001;
+-- DROP TABLE scaletest;
+-- CREATE TABLE scaletest(
+    -- weighnum int PRIMARY KEY,
+    -- time timestamp,
+    -- net numeric,
+    -- gross numeric,
+    -- tare numeric
+-- );
 
+-- ALTER TABLE scaletest ALTER weighnum SET DEFAULT NEXTVAL('scalenum_seq');

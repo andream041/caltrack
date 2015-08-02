@@ -2,8 +2,8 @@ import serial
 import datetime
 import re
 import pandas as pd
+import psycopg2
 
-ser=serial.Serial('/dev/ttyUSB0', 9600)
 
 #print(curtime)
 #x = ser.read(100)
@@ -53,12 +53,20 @@ def get_resolution(unit):
         resolution = 0.01
     return(resolution)
 
+
+ser=serial.Serial('/dev/ttyUSB0', 9600)
+
+conn = psycopg2.connect("dbname=caltrack user=andrea")
 df = pd.DataFrame(columns=('time', 'net', 'gross', 'tare'))
 row=0
 net0=0
 try:
     while True:
         scale = ser.readline()
+
+        curtime = datetime.datetime.now().isoformat()
+        #date = curtime.date().isoformat()
+        #time = curtime.time().isoformat()
         print('line', scale)
         #assert not re.match(b' T', y)
         
@@ -79,16 +87,31 @@ try:
                 net, gross, tare = map(float, [m.group(x) for x in ['net', 'gross', 'tare']])
             except IndexError:
                 net = float(m.group('net'))
-                gross = None
-                tare = None
+                grossdf = None
+                taredf = None
+                gross = 'Null'
+                tare = 'Null'
             #print('net0', net0, 'net', net)
             #print(net)
             if abs(net-net0) < 2.1*resolution:
                 continue
             #curtime = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 
-            curtime = datetime.datetime.now()
-            df.loc[row] = [curtime, net, gross, tare]
+            try:
+                df.loc[row] = [curtime, net, gross, tare]
+            except NameError:
+                df.loc[row] = [curtime, net, grossdf, taredf]
+
+
+            cur = conn.cursor()
+            cmd =   "INSERT INTO scaletest (time, net, gross, tare) VALUES \
+                    ('{0}', {1}, {2}, {3}) \
+                    ;".format(curtime, net, gross, tare)
+            print(cmd)
+            cur.execute(cmd)
+            conn.commit()
+            cur.close()
+
             row+=1
             net0=net
         except AttributeError:
@@ -102,4 +125,7 @@ try:
 except KeyboardInterrupt:
         exit
 ser.close()
+conn.close()
 print(df)
+
+
