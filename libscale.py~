@@ -72,6 +72,7 @@ try:
         
         #isstable = (y.find(b'?') == -1)
         #print('stable', isstable)
+        # ? indicates scale not stable.
         try:
             assert scale.find(b'?') == -1
         except AssertionError:
@@ -82,7 +83,8 @@ try:
             m = re.match(b' *(?P<net>[\d\.:]+) +(?P<unit>[a-z:]+)', scale)
         try:
             #print(m.groups())
-            resolution = get_resolution(m.group('unit'))
+            # Resolution: Keeps stuff being put in the db if the readings are apart by less than 2.1* scale resolution.
+            #resolution = get_resolution(m.group('unit'))
             try:
                 net, gross, tare = map(float, [m.group(x) for x in ['net', 'gross', 'tare']])
             except IndexError:
@@ -93,8 +95,8 @@ try:
                 tare = 'Null'
             #print('net0', net0, 'net', net)
             #print(net)
-            if abs(net-net0) < 2.1*resolution:
-                continue
+            #if abs(net-net0) < 2.1*resolution:
+                #continue
             #curtime = datetime.datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
 
             try:
@@ -102,12 +104,12 @@ try:
             except NameError:
                 df.loc[row] = [curtime, net, grossdf, taredf]
 
-
+            #print(df.loc[row])
             cur = conn.cursor()
             cmd =   "INSERT INTO scaletest (time, net, gross, tare) VALUES \
                     ('{0}', {1}, {2}, {3}) \
                     ;".format(curtime, net, gross, tare)
-            print(cmd)
+            #print(cmd)
             cur.execute(cmd)
             conn.commit()
             cur.close()
