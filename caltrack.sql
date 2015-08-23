@@ -40,3 +40,12 @@
 -- );
 
 -- ALTER TABLE scaletest ALTER weighnum SET DEFAULT NEXTVAL('scalenum_seq');
+
+DROP SEQUENCE scannum_seq;
+CREATE SEQUENCE scannum_seq START 0000000000001;
+DROP TABLE scantest;
+CREATE TABLE scantest(
+    scannum int PRIMARY KEY,
+    time timestamp,
+    barcode varchar(25)
+);
