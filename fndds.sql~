@@ -37,6 +37,7 @@
 
 -- \copy nut_desc from '/home/andrea/Documents/calcount/fndds/NutDesc.txt' (delimiter '^');
 
-SELECT main_food_desc, nut_desc, nutval FROM nut_vals INNER JOIN nut_desc using (nutcode) INNER JOIN main_food_desc USING (foodcode) WHERE nut_desc = '~Energy~' ORDER BY nutval
+-- SELECT main_food_desc, nut_desc, nutval FROM nut_vals INNER JOIN nut_desc using (nutcode) INNER JOIN main_food_desc USING (foodcode) WHERE nut_desc = '~Energy~' ORDER BY nutval;
 
+SELECT * FROM main_food_desc WHERE main_food_desc ~ '~Chicken';
 
